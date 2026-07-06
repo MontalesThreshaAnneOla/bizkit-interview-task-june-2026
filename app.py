@@ -62,12 +62,12 @@ def parse_date(value):
 
 def rental_days(from_date, to_date):
     """Number of days a rental covers."""
-    return (to_date - from_date).days
+    return (to_date - from_date).days +1
 
 
 def dates_overlap(start_a, end_a, start_b, end_b):
     """True if date range A overlaps date range B."""
-    return start_b <= start_a <= end_b
+    return start_a <= end_b and start_b <= end_a
 
 
 def find_conflicting_booking(equipment_id, from_date, to_date, bookings):
@@ -114,6 +114,8 @@ def availability():
 
     available = []
     for item in EQUIPMENT:
+        if item["status"] == "maintenance":
+            continue
         conflict = find_conflicting_booking(item["id"], from_date, to_date, bookings)
         if conflict is None:
             available.append(item)
